@@ -1,8 +1,10 @@
 
+### ✅ `README.md`
+
 
 # TaskHubAPI
 
-TaskHubAPI is a Spring Boot RESTful service that allows users to manage tasks with features like task creation, status updates, and priority-based tracking.
+TaskHubAPI is a Java Spring Boot RESTful API for managing users and their tasks. It supports creating, updating, assigning, and filtering tasks based on status, priority, and due date.
 
 ---
 
@@ -15,26 +17,25 @@ TaskHubAPI is a Spring Boot RESTful service that allows users to manage tasks wi
 - MySQL
 - Maven
 - Postman (for API testing)
-- Hibernate Validator (for input validation)
 
 ---
 
-## ⚙️ Project Setup
+## ⚙️ Project Setup Instructions
 
-1. **Clone the repository**
+1. **Clone the project**
 
 ```bash
-git clone https://github.com/your-username/taskhub-api.git
-cd taskhub-api
+git clone https://github.com/kartikmd/TaskHubAPI.git
+cd TaskHubAPI
 ````
 
-2. **Create MySQL Database**
+2. **Create the database**
 
 ```sql
 CREATE DATABASE db;
 ```
 
-3. **Configure `application.properties`**
+3. **Update `application.properties`**
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/db?useSSL=false&serverTimezone=UTC
@@ -51,68 +52,78 @@ mvn spring-boot:run
 
 ---
 
-## 🔗 API Endpoints
+## 🔗 Sample API Requests
 
-### 👤 User Endpoints
+### ✅ Create a User
 
-| Method | Endpoint          | Description     |
-| ------ | ----------------- | --------------- |
-| GET    | `/api/users`      | Get all users   |
-| GET    | `/api/users/{id}` | Get user by ID  |
-| POST   | `/api/users`      | Create new user |
-| PUT    | `/api/users/{id}` | Update user     |
-| DELETE | `/api/users/{id}` | Delete user     |
-
-### ✅ Task Endpoints
-
-| Method | Endpoint                   | Description             |
-| ------ | -------------------------- | ----------------------- |
-| GET    | `/api/tasks`               | Get all tasks           |
-| GET    | `/api/tasks/{id}`          | Get task by ID          |
-| GET    | `/api/tasks/user/{userId}` | Get tasks by user ID    |
-| POST   | `/api/tasks`               | Create new task         |
-| PUT    | `/api/tasks/{id}`          | Update task             |
-| PATCH  | `/api/tasks/{id}/status`   | Update task status only |
-| DELETE | `/api/tasks/{id}`          | Delete task             |
-
----
-
-## 📥 Sample Request
-
-### POST `/api/tasks`
+**POST** `/api/users`
 
 ```json
 {
-  "title": "Finish project",
-  "description": "Build backend with Spring Boot",
+  "name": "Alice",
+  "email": "alice@example.com"
+}
+```
+
+---
+
+### ✅ Create a Task
+
+**POST** `/api/tasks`
+
+```json
+{
+  "title": "Build Spring API",
+  "description": "Finish TaskHub assignment",
   "status": "PENDING",
   "priority": "HIGH",
-  "dueDate": "2025-08-15",
+  "dueDate": "2025-08-10",
   "userId": 1
 }
 ```
 
 ---
 
-## ✅ Validation Rules
+### ✅ Update Task Status
 
-* `dueDate` must be in the future
-* `title`, `status`, `priority`, and `userId` are required
+**PATCH** `/api/tasks/1/status`
 
----
-
-## 🧠 Architecture
-
-* Layered structure: Controller → Service → Repository → Entity
-* DTOs used for request and response
-* `@ControllerAdvice` handles global exceptions
-* Enum-based fields for `Status` and `Priority`
+```json
+{
+  "status": "IN_PROGRESS"
+}
+```
 
 ---
 
-## 👤 Author
+### ✅ Get Tasks by User
 
-Kartik Naik
-Spring Boot Developvser – TaskHubAPI
+**GET** `/api/tasks/user/1`
+
+---
+
+## 🧠 OOP & Architecture Explanation
+
+* **DTO Layer:** Used for all API request/response objects to keep domain models decoupled from HTTP logic.
+* **Entity Layer:** Contains `User` and `TaskItem` JPA entities, mapped to database tables.
+* **Service Layer:** Business logic is separated into interfaces and `impl` classes for loose coupling and testability.
+* **Repository Layer:** Uses Spring Data JPA for database access via interfaces.
+* **Controller Layer:** Handles HTTP endpoints and delegates to services.
+* **Enums:** `Status` and `Priority` are modeled using `enum` for controlled values.
+* **Validation:** Uses `jakarta.validation` annotations (`@NotNull`, `@Future`) to ensure data integrity.
+* **Exception Handling:** A global exception handler is implemented using `@ControllerAdvice`.
+
+---
+
+## 🧪 Testing
+
+Use **Postman** to test the API endpoints. All responses are JSON formatted. Validation errors return `400 Bad Request` with field-level messages.
+
+---
+
+## 👨‍💻 Author
+
+**Kartik Naik**
+Spring Boot Developer
 
 
