@@ -12,7 +12,8 @@ import java.time.LocalDate;
 @Entity
 public class TaskItem
 {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private  String title;
     private  String description;
