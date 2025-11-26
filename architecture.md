@@ -1,9 +1,9 @@
 ```mermaid
 graph TD
-  A[Client (Web / Mobile / CLI)] -->|HTTPS REST| B[Ingress / Load Balancer]
-  B --> C[TaskHubAPI (Spring Boot)]
+  A[Client] -->|HTTPS| B[Load Balancer]
+  B --> C[TaskHubAPI]
 
-  subgraph App [TaskHubAPI - code (src/main/java)]
+  subgraph App
     C1[TaskHubApiApplication]
     C2[controller - TaskController]
     C3[service - TaskService]
@@ -18,10 +18,10 @@ graph TD
   C2 --> C3
   C3 --> C4
 
-  C4 --> D[(MySQL Database)]
-  C3 --> E[(Redis Cache)]
+  C4 --> D[(MySQL DB)]
+  C3 --> E[(Redis)]
   C3 --> F[(Message Broker)]
-  F --> G[Worker / Consumers]
+  F --> G[Workers]
 
-  C --> H[Monitoring / Actuator / Logs]
+  C --> H[Monitoring]
 ```
