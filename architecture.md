@@ -8,9 +8,9 @@ graph TD
     C2[controller - TaskController]
     C3[service - TaskService]
     C4[repository - TaskRepository]
-    C5[model - Entities/DTO]
+    C5[model - Entity/DTO]
     C6[config - SecurityConfig]
-    C7[async - Events/Listeners]
+    C7[async - EventListeners]
   end
 
   C --> C1
@@ -24,3 +24,4 @@ graph TD
   F --> G[Worker / Consumers]
 
   C --> H[Monitoring / Actuator / Logs]
+```
