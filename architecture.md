@@ -1,27 +1,11 @@
 ```mermaid
 graph TD
-  A[Client] -->|HTTPS| B[Load Balancer]
-  B --> C[TaskHubAPI]
+  Client[Client] -->|HTTP| App[TaskHubAPI (Single Spring Boot App)]
 
-  subgraph App
-    C1[TaskHubApiApplication]
-    C2[controller - TaskController]
-    C3[service - TaskService]
-    C4[repository - TaskRepository]
-    C5[model - Entity/DTO]
-    C6[config - SecurityConfig]
-    C7[async - EventListeners]
-  end
+  App --> Entry[TaskHubApiApplication.java]
+  App --> Config[application.properties]
 
-  C --> C1
-  C1 --> C2
-  C2 --> C3
-  C3 --> C4
-
-  C4 --> D[(MySQL DB)]
-  C3 --> E[(Redis)]
-  C3 --> F[(Message Broker)]
-  F --> G[Workers]
-
-  C --> H[Monitoring]
-```
+  App --> DB[Database (Not included in ZIP)]
+  App --> Cache[Cache (Not included)]
+  App --> MQ[Message Broker (Not included)]
+  App --> Monitoring[Monitoring/Actuator (Not configured)]
