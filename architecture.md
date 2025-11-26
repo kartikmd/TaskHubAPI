@@ -1,19 +1,78 @@
 ```mermaid
 graph TD
-  Client --> LB
-  LB --> Instance1
-  LB --> Instance2
-  Instance1 --> Controllers1
-  Instance1 --> Services1
-  Instance1 --> Repositories1
-  Instance2 --> Controllers2
-  Instance2 --> Services2
-  Instance2 --> Repositories2
-  Repositories1 --> DB
-  Repositories2 --> DB
-  Services1 --> Cache
-  Services2 --> Cache
-  Services1 --> MQ
-  Workers --> MQ
-  InstancesMonitoring[Monitoring / Logs] --> Instance1
-  InstancesMonitoring --> Instance2
+
+  %% Entry
+  subgraph Entry
+    Dev[Client / Developer]
+    App[Spring Boot App\nTaskHubApiApplication]
+  end
+
+  %% Ingestion (HTTP)
+  subgraph Ingestion
+    TaskAPI[TaskController (REST)\nPOST /api/tasks]
+    FileAPI[FileUploadController\nPOST /api/files]
+  end
+
+  %% Processing / Business Logic
+  subgraph Processing
+    Validator[InputValidator]
+    TaskSvc[TaskService\n(business rules)]
+    Mapper[DtoMapper / Model]
+    Repo[TaskRepository\n(JPA)]
+  end
+
+  %% Async & Workers
+  subgraph Async
+    Broker[Message Broker\n(Rabbit/Kafka) - optional]
+    Worker[Worker / Consumer\n(Notifications, Jobs)]
+  end
+
+  %% Persistence & Storage
+  subgraph Persistence
+    DB[(MySQL / RDBMS)]
+    Cache[(Redis) - optional]
+    FileStore[(uploads/  output/)]
+  end
+
+  %% Observability & Ops
+  subgraph Observability
+    Logs[SLF4J + Logback]
+    Metrics[Actuator / Prometheus]
+    Tracing[Tracing / APM (optional)]
+  end
+
+  %% Outputs
+  subgraph Outputs
+    APIResp[JSON Responses]
+    Notifs[Email / Push Notifications]
+    Reports[Reports / Export files]
+  end
+
+  %% Flow Connections
+  Dev --> App
+  App --> TaskAPI
+  App --> FileAPI
+
+  TaskAPI --> Validator
+  Validator --> TaskSvc
+  TaskSvc --> Mapper
+  Mapper --> Repo
+  Repo --> DB
+
+  FileAPI --> FileStore
+  TaskSvc --> FileStore
+
+  TaskSvc --> Broker
+  Broker --> Worker
+  Worker --> Notifs
+  Worker --> Reports
+  TaskSvc --> Cache
+  TaskAPI --> APIResp
+
+  TaskAPI --> Logs
+  TaskSvc --> Logs
+  Repo --> Logs
+  Worker --> Logs
+
+  Logs --> Metrics
+  Metrics --> Tracing
